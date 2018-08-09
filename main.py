@@ -77,9 +77,11 @@ def download_images(data: dict):
             full_path = path + get_img_name(link)
 
             response = requests.get(link)
+
             if response.status_code == 200:
                 with open(full_path, 'wb') as f:
                     f.write(response.content)
+
             print(full_path, 'is downloaded.')
 
 
@@ -98,7 +100,7 @@ def make_all(link: str):
 
 def main():
     page = 1
-    last_page_number = 0
+    num_of_pages = 0
     links = []
 
     while True:
@@ -107,10 +109,10 @@ def main():
             html = get_html(url)
             links.extend(get_links(html))
 
-            if last_page_number == 0:
-                last_page_number = int(get_number_of_pages(html))
+            if num_of_pages == 0:
+                num_of_pages = int(get_number_of_pages(html))
 
-            if page < last_page_number:
+            if page < num_of_pages:
                 page = page + 1
             else:
                 break
@@ -119,9 +121,11 @@ def main():
 
     print('Extract item links is done!')
 
+    # 1. multithreading way
     with Pool(3) as p:
         p.map(make_all, links)
 
+    # 2. single thread way
     # img_links = {}
     # for link in links:
     #     html = get_html(link)
