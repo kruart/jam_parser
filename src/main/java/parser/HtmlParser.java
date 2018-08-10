@@ -13,7 +13,7 @@ import java.nio.file.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class HtmlParser {
+class HtmlParser {
 
     public static String getHtml(String url) throws IOException {
         return Jsoup.connect(url).get().html();
@@ -35,6 +35,7 @@ public class HtmlParser {
                 .last()
                 .attr("href");
 
+        // https://jam.ua/picks?list=21  => 21
         return href.substring(href.lastIndexOf("=") + 1);
     }
 
@@ -49,7 +50,6 @@ public class HtmlParser {
         } else {
             imgLinks.add(getMainImageLink(doc, domain));
         }
-
 //        return Map.of(title, imgLinks); //java 9
         return Collections.unmodifiableMap(new HashMap<String, List<String>>() {{ put(title, imgLinks);}});
     }
@@ -82,7 +82,6 @@ public class HtmlParser {
                 System.out.println(Thread.currentThread() + " start working on " + entry.getKey() + " " + link);
                 Path path = Paths.get(parentFolder + entry.getKey());
 
-
                 if (!Files.exists(path)) {
                     Files.createDirectories(path);
                 }
@@ -92,6 +91,8 @@ public class HtmlParser {
                 try(InputStream in = new URL(link).openStream()){
                     Files.copy(in, Paths.get(fullPath), StandardCopyOption.REPLACE_EXISTING);
                 }
+
+                System.out.println(fullPath + " is downloaded.");
             }
         }
     }
