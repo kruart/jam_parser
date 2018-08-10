@@ -19,9 +19,9 @@ public class HtmlParser {
         return Jsoup.connect(url).get().html();
     }
 
-    public static List<String> getLinksFromDiv(String html, String elementId) {
+    public static List<String> getLinksFromDivs(String html) {
         Document doc = Jsoup.parse(html);
-        Elements divs = doc.select("div#" + elementId);
+        Elements divs = doc.select("div#catalog_item");
         return divs.stream()
                 .map(div -> div.getElementsByTag("a").attr("href"))
                 .collect(Collectors.toList());
@@ -79,7 +79,7 @@ public class HtmlParser {
 
         for (Map.Entry<String, List<String>> entry : data.entrySet()) {
             for (String link : entry.getValue()) {
-                System.out.println("start working on " + entry.getKey() + " " + link);
+                System.out.println(Thread.currentThread() + " start working on " + entry.getKey() + " " + link);
                 Path path = Paths.get(parentFolder + entry.getKey());
 
 
